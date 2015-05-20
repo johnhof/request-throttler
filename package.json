@@ -22,5 +22,14 @@
   "bugs": {
     "url": "https://github.com/johnhof/request-throttler/issues"
   },
-  "homepage": "https://github.com/johnhof/request-throttler"
+  "homepage": "https://github.com/johnhof/request-throttler",
+  "devDependencies": {
+    "express": "^4.12.4",
+    "koa": "^0.20.0"
+  },
+  "dependencies": {
+    "co": "^4.5.4",
+    "lodash": "^3.9.1",
+    "redis": "^0.12.1"
+  }
 }
