@@ -25,4 +25,6 @@ app.use(function (req, res, next) {
   res.status(200).json({ success : true });
 });
 
-app.listen(5555);
+const PORT = 5555;
+app.listen(PORT);
+console.log('listening on: ' + PORT)

@@ -13,7 +13,7 @@ app.use(throttler({
     }
   },
   error : function *(error) {
-    console.log(error.stack);
+    console.log(error);
     this.status = 500;
     this.body = {
       success : false,
@@ -26,4 +26,6 @@ app.use(function *() {
   this.body = { success : true };
 });
 
-app.listen(4444);
+const PORT = 4444;
+app.listen(PORT);
+console.log('listening on: ' + PORT)
