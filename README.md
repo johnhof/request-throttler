@@ -1,10 +1,12 @@
 # request-throttler
 
-Middleware to throttle requests by a single use/set of users. Helpful in reducing server load, preventing datamining, and stifling brute force attacks
+Middleware to throttle requests by a single use/set of users. Helpful in reducing server load, preventing datamining, and stifling brute force attacks.
 
 If a given user goes above the allowed `requestsPerSecond`, a 503 is returned for every request until the average drops. User state and request count is kept int the redis database and reset after `timeToLive` seconds. The user request count is stored in a redis database, specified during configuration.
 
 It's important to note that the count can only be updated as fast as the redis database allows access. if two requests come in at the same time, the count will only be increased by one.
+
+**Note:** The `--harmony` flag is required for both koa and express
 
 ## Key
 
@@ -16,6 +18,11 @@ It's important to note that the count can only be updated as fast as the redis d
   - [config.timeToLive](#configtimetplive)
   - [config.throttler](#configthrottler)
   - [config.error](#configerror)
+- [Customization](#customization)
+  - [Redis Workarounds](redis-workarounds)
+    - [config.client](#configclient)
+    - [config.getFingerprint](#configgetfingerprint)
+    - [config.SetFingerprint](#configsetfingerprint)
 
 
 ## Usage
@@ -155,5 +162,51 @@ config.error = function *(error) {
   console.log(error.stack);
   this.status = 500;
   this.body = 'Internal server error'  
+}
+```
+
+## Customization
+
+### Redis Workarounds
+
+The redis store methods and be overridden, and redis can be removed entirely if desired. The following methods should be used
+
+#### config.client
+
+- Must be an object with `get(stringKey, callback)` and `set(stringKey, stringValue, callback)`
+
+```javascript
+config.client = {
+  get: function (key, callback) {
+    return yourGetOperation(key, function (error, result) {
+      return callback(error, result);
+    });
+  },
+  set: function (key, value, callback) {
+    return yourSetOperation(key, value, function (error, result) {
+      return callback(error, result);
+    });
+  }
+}
+```
+
+#### config.getFingerprint
+
+- Generator function to get a fingerprint
+
+```javascript
+config.getFingerprint = function *(key) {
+  yield yourGetOperation(key);
+}
+```
+
+
+#### config.setFingerprint
+
+- Generator function to set a fingerprint
+
+```javascript
+config.setFingerprint = function *(key, newRequestCount) {
+  yield yourSetOperation(key, newRequestCount);
 }
 ```
