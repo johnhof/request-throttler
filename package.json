@@ -1,6 +1,6 @@
 {
   "name": "request-throttler",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Middleware to throttle requests by a single use/set of users",
   "main": "lib/index.js",
   "scripts": {
